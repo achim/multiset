@@ -30,7 +30,7 @@
       (assoc t x (inc (get t x 0)))
       (inc size)))
   (empty [this] empty-multiset)
-  (equiv [this x] (.equals t (.t x)))
+  (equiv [this x] (.equals this x))
  
   clojure.lang.Seqable ;----------
   (seq [this]
@@ -43,7 +43,9 @@
 
   Object ;----------
   (equals [this x]
-    (.equals t (.t x)))
+    (if (instance? (class this) x)
+      (.equals t (.t x))
+      false))
   (hashCode [this]
     (hash-combine (hash t) MultiSet))
 
