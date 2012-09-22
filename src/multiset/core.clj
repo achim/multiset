@@ -83,7 +83,7 @@
 (defn ^:private mults [coll]
   (if (multiset? coll)
     (multiplicities coll)
-    (into {} #(vector % 1) coll)))
+    (into {} (map #(vector % 1) coll))))
 
 (defn ^:private msetop [keysfn multfn]
   (fn op
