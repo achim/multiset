@@ -119,3 +119,8 @@
 (defn scale [ms n]
   (multiplicities->multiset (fu/fmap #(* n %) (multiplicities ms))))
 
+(defn subset [a b]
+  (let [a (mults a)
+        b (mults b)
+        ks (-> #{} (into (keys a)) (into (keys b)))]
+    (reduce #(and %1 (<= (get a %2 0) (get b %2 0))) true ks)))
