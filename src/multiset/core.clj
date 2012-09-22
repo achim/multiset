@@ -1,9 +1,10 @@
-(ns multiset.core)
+(ns multiset.core
+  (:require [clojure.algo.generic.functor :as fu]))
 
 (declare empty-multiset)
 
-(defprotocol Multiplicity
-  (multiplicity [this x]))
+(defprotocol Multiplicities
+  (multiplicities [this]))
 
 (deftype MultiSet [^clojure.lang.IPersistentMap t
                    ^int size]
@@ -58,15 +59,63 @@
         r
         default)))
 
-  Multiplicity ;----------
-  (multiplicity [this x]
-    (get t x 0)))
+  Multiplicities ;----------
+  (multiplicities [this] t))
 
 (def ^:private empty-multiset (MultiSet. {} 0))
 
 (defn multiset [& xs]
   (into empty-multiset xs))
 
+(defn multiplicities->multiset [t]
+  (let [size (reduce + (vals t))]
+    (MultiSet. t size)))
+
+(defn multiset? [x]
+  (instance? MultiSet x))
+
+(defn multiplicities [ms]
+  (.multiplicities ms))
+
 (defn multiplicity [ms x]
-  (.multiplicity ms x))
+  (get (multiplicities ms) x 0))
+
+(defn ^:private mults [coll]
+  (if (multiset? coll)
+    (multiplicities coll)
+    (into {} #(vector % 1) coll)))
+
+(defn ^:private msetop [keysfn multfn]
+  (fn op
+    ([a b]
+      (let [a (mults a)
+            b (mults b)
+            ks (keysfn (keys a) (keys b))]
+        (multiplicities->multiset
+          (->> ks (map #(vector % (multfn a b %)))
+                  (filter #(> (get % 1) 0))
+                  (into {})))))))
+
+(def intersect
+  (msetop (fn [a b] a)
+          #(min (get %1 %3 0) (get %2 %3 0))))
+
+(def union
+  (msetop #(-> #{} (into %1) (into %2))
+          #(max (get %1 %3 0) (get %2 %3 0))))
+
+(def cartprod
+  (msetop (fn [a b] (mapcat #(map (fn [x] (vector %1 x)) b) a))
+          (fn [a b [x y]] (* (get a x 0) (get b y 0)))))
+
+(def sum
+  (msetop #(-> #{} (into %1) (into %2))
+          #(+ (get %1 %3 0) (get %2 %3 0))))
+
+(def minus
+  (msetop (fn [a b] a)
+          #(max 0 (- (get %1 %3) (get %2 %3 0)))))
+
+(defn scale [ms n]
+  (multiplicities->multiset (fu/fmap #(* n %) (multiplicities ms))))
 
