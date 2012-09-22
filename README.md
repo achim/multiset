@@ -1,6 +1,6 @@
 # multiset
 
-A simple multiset/bag implementation.
+A simple multiset/bag implementation. 
 
 ## Usage
 
@@ -16,6 +16,8 @@ Add this to your `:depependencies`:
 
 #### Define some multisets
 ```clojure
+user=> (require '[multiset.core :as ms])
+nil
 user=> (def a (ms/multiset 1 2 4 5 4 2 7))
 #'user/a
 user=> (def b (ms/multiset 4 5 6 6 9))
