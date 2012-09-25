@@ -60,6 +60,23 @@
         r
         default)))
 
+  java.util.Collection ;----------
+  (isEmpty [this]
+    (zero? size))
+  (contains [this x]
+    (let [nothing (gensym)
+          v (get t x nothing)]
+      (not= v nothing)))
+  (size [this] size)
+  (toArray [this a]
+    (.toArray (seq this) a))
+  (toArray [this]
+    (.toArray (seq this)))
+  (iterator [this]
+    (.iterator (seq this)))
+  (containsAll [this coll]
+    (.containsAll (into #{} this) coll))
+
   Multiplicities ;----------
   (multiplicities [this] t))
 
