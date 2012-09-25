@@ -11,8 +11,9 @@
 
   clojure.lang.IPersistentSet ;----------
   (get [this x]
-    (let [v (get t x)]
-      (if v x nil)))
+    (let [nothing (gensym)
+          v (get t x nothing)]
+      (if (not= v nothing) x nil)))
   (contains [this x]
     (if (get t x) true false))
   (disjoin [this x]
