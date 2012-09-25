@@ -81,20 +81,26 @@
 (def ^:private empty-multiset (MultiSet. {} 0))
 
 (defn multiset [& xs]
+  "Create a multiset with given elements."
   (into empty-multiset xs))
 
 (defn multiplicities->multiset [t]
+  "Create a multiset from a given multilicities map"
+  "(see 'multiplicities')."
   (let [size (reduce + (vals t))]
     (MultiSet. t size)))
 
 (defn multiset? [x]
+  "Return true if x is a multiset, false otherwise."
   (instance? MultiSet x))
 
-(defn multiplicities [ms]
-  (.multiplicities ms))
+(defn multiplicities [m]
+  "Return a map sending each element of m to its multiplicity."
+  (.multiplicities m))
 
-(defn multiplicity [ms x]
-  (get (multiplicities ms) x 0))
+(defn multiplicity [m x]
+  "Return the multiplicity of element x in m, 0 if x is not present."
+  (get (multiplicities m) x 0))
 
 (defn ^:private mults [coll]
   (if (multiset? coll)
@@ -113,29 +119,37 @@
                   (into {})))))))
 
 (def intersect
+  "Return the intersection of a and b as a multiset."
   (msetop (fn [a b] a)
           #(min (get %1 %3 0) (get %2 %3 0))))
 
-(def union
+(def ^{:arglists '([a b])} union
+  "Return the union of a and b as a multiset."
   (msetop #(-> #{} (into %1) (into %2))
           #(max (get %1 %3 0) (get %2 %3 0))))
 
-(def cartprod
+(def ^{:arglists '([a b])} cartprod
+  "Return the cartesian product of a and b as a multiset."
   (msetop (fn [a b] (mapcat #(map (fn [x] (vector %1 x)) b) a))
           (fn [a b [x y]] (* (get a x 0) (get b y 0)))))
 
-(def sum
+(def ^{:arglists '([a b])} sum
+  "Return the multiset sum of a and b as a multiset."
   (msetop #(-> #{} (into %1) (into %2))
           #(+ (get %1 %3 0) (get %2 %3 0))))
 
-(def minus
+(def ^{:arglists '([a b])} minus
+  "Return the difference a-b of a and b as a multiset."
   (msetop (fn [a b] a)
           #(max 0 (- (get %1 %3) (get %2 %3 0)))))
 
-(defn scale [ms n]
-  (multiplicities->multiset (fu/fmap #(* n %) (multiplicities ms))))
+(defn scale [m k]
+  "Return a multiset in which the multiplicity of each
+  element in m is scaled by factor k."
+  (multiplicities->multiset (fu/fmap #(* k %) (multiplicities m))))
 
 (defn subset? [a b]
+  "Return true, if a is a subset of b."
   (let [a (mults a)
         b (mults b)]
     (reduce #(and %1 (<= (get a %2) (get b %2 0))) true (keys a))))
