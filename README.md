@@ -11,6 +11,9 @@ Add this to your `:depependencies`:
 ```clojure
 [org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
 ```
+### [API Docs](http://achim.github.com/multiset/)
+
+The current API docs are here: http://achim.github.com/multiset
 
 ### Example usage
 
