@@ -80,27 +80,27 @@
 
 (def ^:private empty-multiset (MultiSet. {} 0))
 
-(defn multiset [& xs]
+(defn multiset
   "Create a multiset with given elements."
-  (into empty-multiset xs))
+  [& xs] (into empty-multiset xs))
 
 (defn multiplicities->multiset [t]
   "Create a multiset from a given multilicities map"
   "(see 'multiplicities')."
-  (let [size (reduce + (vals t))]
-    (MultiSet. t size)))
+  [t] (let [size (reduce + (vals t))]
+        (MultiSet. t size)))
 
-(defn multiset? [x]
+(defn multiset?
   "Return true if x is a multiset, false otherwise."
-  (instance? MultiSet x))
+   [x] (instance? MultiSet x))
 
 (defn multiplicities [m]
   "Return a map sending each element of m to its multiplicity."
-  (.multiplicities m))
+   [m] (.multiplicities m))
 
-(defn multiplicity [m x]
+(defn multiplicity
   "Return the multiplicity of element x in m, 0 if x is not present."
-  (get (multiplicities m) x 0))
+   [m x] (get (multiplicities m) x 0))
 
 (defn ^:private mults [coll]
   (if (multiset? coll)
@@ -143,13 +143,15 @@
   (msetop (fn [a b] a)
           #(max 0 (- (get %1 %3) (get %2 %3 0)))))
 
-(defn scale [m k]
+(defn scale
   "Return a multiset in which the multiplicity of each
   element in m is scaled by factor k."
+  [m k]
   (multiplicities->multiset (fu/fmap #(* k %) (multiplicities m))))
 
-(defn subset? [a b]
+(defn subset?
   "Return true, if a is a subset of b."
+  [a b]
   (let [a (mults a)
         b (mults b)]
     (reduce #(and %1 (<= (get a %2) (get b %2 0))) true (keys a))))
