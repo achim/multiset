@@ -15,7 +15,9 @@
           v (get t x nothing)]
       (if (not= v nothing) x nil)))
   (contains [this x]
-    (if (get t x) true false))
+    (let [nothing (gensym)
+          v (get t x nothing)]
+      (not= v nothing)))
   (disjoin [this x]
     (let [oldcount (get t x)]
       (if (not oldcount)
@@ -63,10 +65,6 @@
   java.util.Collection ;----------
   (isEmpty [this]
     (zero? size))
-  (contains [this x]
-    (let [nothing (gensym)
-          v (get t x nothing)]
-      (not= v nothing)))
   (size [this] size)
   (toArray [this a]
     (.toArray (seq this) a))
