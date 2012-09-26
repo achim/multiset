@@ -1,4 +1,5 @@
 (ns multiset.core
+  "A simple multiset/bag implementation for Clojure."
   (:require [clojure.algo.generic.functor :as fu]))
 
 (declare empty-multiset)

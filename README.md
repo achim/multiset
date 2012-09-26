@@ -1,6 +1,6 @@
 # multiset
 
-A simple multiset/bag implementation. 
+A simple multiset/bag implementation for Clojure.
 
 ## Usage
 
