@@ -106,7 +106,7 @@
 (defn ^:private mults [coll]
   (if (multiset? coll)
     (multiplicities coll)
-    (into {} (map #(vector % 1) coll))))
+    (reduce #(assoc %1 %2 (inc (get %1 %2 0))) {} coll)))
 
 (defn ^:private msetop [keysfn multfn]
   (fn op
