@@ -127,7 +127,7 @@
 (def ^{:arglists '([a b])} union
   "Return the union of a and b as a multiset."
   (msetop #(-> #{} (into %1) (into %2))
-          #(max (get %1 %3 0) (get %2 %3 0))))
+          #(+ (get %1 %3 0) (get %2 %3 0))))
 
 (def ^{:arglists '([a b])} cartprod
   "Return the cartesian product of a and b as a multiset."
