@@ -1,4 +1,4 @@
-(defproject org.clojars.achim/multiset "0.1.0-SNAPSHOT"
+(defproject org.clojars.achim/multiset "0.1.1-SNAPSHOT"
   :description "A simple multiset/bag implementation for Clojure."
   :url "https://github.com/achim/multiset"
   :license {:name "Eclipse Public License"
