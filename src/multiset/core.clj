@@ -85,23 +85,23 @@
   "Create a multiset with given elements."
   [& xs] (into empty-multiset xs))
 
-(defn multiplicities->multiset [t]
-  "Create a multiset from a given multilicities map"
-  "(see 'multiplicities')."
+(defn multiplicities->multiset
+  "Create a multiset from a given multilicities map
+  (see 'multiplicities')."
   [t] (let [size (reduce + (vals t))]
         (MultiSet. t size)))
 
 (defn multiset?
   "Return true if x is a multiset, false otherwise."
-   [x] (instance? MultiSet x))
+  [x] (instance? MultiSet x))
 
-(defn multiplicities [m]
+(defn multiplicities
   "Return a map sending each element of m to its multiplicity."
-   [m] (.multiplicities m))
+  [m] (.multiplicities m))
 
 (defn multiplicity
   "Return the multiplicity of element x in m, 0 if x is not present."
-   [m x] (get (multiplicities m) x 0))
+  [m x] (get (multiplicities m) x 0))
 
 (defn ^:private mults [coll]
   (if (multiset? coll)
@@ -119,7 +119,7 @@
                   (filter #(> (get % 1) 0))
                   (into {})))))))
 
-(def intersect
+(def ^{:arglists '([a b])} intersect
   "Return the intersection of a and b as a multiset."
   (msetop (fn [a b] a)
           #(min (get %1 %3 0) (get %2 %3 0))))
