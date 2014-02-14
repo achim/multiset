@@ -13,13 +13,10 @@
 
   clojure.lang.IPersistentSet ;----------
   (get [this x]
-    (let [nothing (gensym)
-          v (get t x nothing)]
-      (if (not= v nothing) x nil)))
+    (if-let [e (find t x)]
+      (key e)))
   (contains [this x]
-    (let [nothing (gensym)
-          v (get t x nothing)]
-      (not= v nothing)))
+    (boolean (find t x)))
   (disjoin [this x]
     (let [oldcount (get t x)]
       (if (not oldcount)
