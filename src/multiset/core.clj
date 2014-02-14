@@ -1,6 +1,7 @@
 (ns multiset.core
   "A simple multiset/bag implementation for Clojure."
-  (:require [clojure.algo.generic.functor :as fu]))
+  (:require [clojure.algo.generic.functor :as fu])
+  (:import (java.util Collection)))
 
 (declare empty-multiset)
 
@@ -23,12 +24,12 @@
     (let [oldcount (get t x)]
       (if (not oldcount)
         this
-        (MultiSet. 
+        (MultiSet.
           (if (== 1 oldcount)
             (dissoc t x)
             (assoc t x (dec oldcount)))
           (dec size)))))
- 
+
   clojure.lang.IPersistentCollection ;----------
   (cons [this x]
     (MultiSet.
@@ -36,20 +37,20 @@
       (inc size)))
   (empty [this] empty-multiset)
   (equiv [this x] (.equals this x))
- 
+
   clojure.lang.Seqable ;----------
   (seq [this]
     (let [k (first (keys t))]
       (if k
         (lazy-seq (cons k (.seq (.disjoin this k)))))))
- 
+
   clojure.lang.Counted ;----------
   (count [this] size)
 
   Object ;----------
   (equals [this x]
-    (if (instance? (class this) x)
-      (.equals t (.t x))
+    (if (instance? MultiSet x)
+      (.equals t (.t ^MultiSet x))
       false))
   (hashCode [this]
     (hash-combine (hash t) MultiSet))
@@ -63,18 +64,18 @@
         r
         default)))
 
-  java.util.Collection ;----------
+  Collection ;----------
   (isEmpty [this]
     (zero? size))
   (size [this] size)
   (toArray [this a]
-    (.toArray (seq this) a))
+    (.toArray ^Collection (seq this) a))
   (toArray [this]
-    (.toArray (seq this)))
+    (.toArray ^Collection (seq this)))
   (iterator [this]
-    (.iterator (seq this)))
+    (.iterator ^Collection (seq this)))
   (containsAll [this coll]
-    (.containsAll (into #{} this) coll))
+    (.containsAll ^Collection (into #{} this) coll))
 
   Multiplicities ;----------
   (multiplicities [this] t))
@@ -97,7 +98,7 @@
 
 (defn multiplicities
   "Return a map sending each element of m to its multiplicity."
-  [m] (.multiplicities m))
+  [^MultiSet m] (.multiplicities m))
 
 (defn multiplicity
   "Return the multiplicity of element x in m, 0 if x is not present."
