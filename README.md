@@ -8,12 +8,11 @@ A simple multiset/bag implementation for Clojure.
 
 Add this to your `:depependencies`:
 
-```clojure
-[org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
-```
+![Clojars Project](http://clojars.org/org.clojars.achim/multiset/latest-version.svg)
+
 ### [API Docs](http://achim.github.com/multiset/)
 
-The current API docs are here: http://achim.github.com/multiset
+The current API docs are here: http://achim.github.io/multiset
 
 ### Example usage
 
@@ -75,8 +74,10 @@ user=> (ms/subset? (ms/multiset 2 2 2) a)
 false
 ```
 
+## Contributors
+
 ## License
 
-Copyright (C) 2012 Achim Passen
+Copyright (C) 2012–2015 Achim Passen and [contributors](https://github.com/achim/multiset/graphs/contributors).
 
 Distributed under the Eclipse Public License. See COPYING.
