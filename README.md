@@ -74,8 +74,6 @@ user=> (ms/subset? (ms/multiset 2 2 2) a)
 false
 ```
 
-## Contributors
-
 ## License
 
 Copyright (C) 2012–2015 Achim Passen and [contributors](https://github.com/achim/multiset/graphs/contributors).
