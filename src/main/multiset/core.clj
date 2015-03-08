@@ -1,14 +1,16 @@
 (ns multiset.core
   "A simple multiset/bag implementation for Clojure."
   (:require [clojure.algo.generic.functor :as fu])
-  (:import (java.util Collection)))
+  (:import (java.util Collection)
+           (clojure.lang IPersistentMap)))
 
 (declare empty-multiset)
 
 (defprotocol Multiplicities
   (multiplicities [this]))
 
-(deftype MultiSet [^clojure.lang.IPersistentMap t
+(deftype MultiSet [^IPersistentMap m
+                   ^IPersistentMap t
                    ^int size]
 
   clojure.lang.IPersistentSet ;----------
@@ -22,6 +24,7 @@
       (if (not oldcount)
         this
         (MultiSet.
+          m
           (if (== 1 oldcount)
             (dissoc t x)
             (assoc t x (dec oldcount)))
@@ -30,9 +33,10 @@
   clojure.lang.IPersistentCollection ;----------
   (cons [this x]
     (MultiSet.
+      m
       (assoc t x (inc (get t x 0)))
       (inc size)))
-  (empty [this] empty-multiset)
+  (empty [this] (with-meta empty-multiset m))
   (equiv [this x] (.equals this x))
 
   clojure.lang.Seqable ;----------
@@ -43,6 +47,13 @@
 
   clojure.lang.Counted ;----------
   (count [this] size)
+
+  clojure.lang.IMeta ;----------
+  (meta [this] m)
+
+  clojure.lang.IObj ;----------
+  (withMeta [this m]
+    (MultiSet. m t size))
 
   Object ;----------
   (equals [this x]
@@ -77,7 +88,7 @@
   Multiplicities ;----------
   (multiplicities [this] t))
 
-(def ^:private empty-multiset (MultiSet. {} 0))
+(def ^:private empty-multiset (MultiSet. nil {} 0))
 
 (defn multiset
   "Create a multiset with given elements."
@@ -86,16 +97,13 @@
 (defn multiplicities->multiset
   "Create a multiset from a given multilicities map
   (see 'multiplicities')."
-  [t] (let [size (reduce + (vals t))]
-        (MultiSet. t size)))
+  [t] (let [mults (into {} (for [[k v] t :when (pos? v)] [k v]))
+            size  (reduce + (vals mults))]
+        (MultiSet. nil mults size)))
 
 (defn multiset?
   "Return true if x is a multiset, false otherwise."
   [x] (instance? MultiSet x))
-
-(defn multiplicities
-  "Return a map sending each element of m to its multiplicity."
-  [^MultiSet m] (.multiplicities m))
 
 (defn multiplicity
   "Return the multiplicity of element x in m, 0 if x is not present."
@@ -146,7 +154,8 @@
   "Return a multiset in which the multiplicity of each
   element in m is scaled by factor k."
   [m k]
-  (multiplicities->multiset (fu/fmap #(* k %) (multiplicities m))))
+  (when-not (neg? k)
+    (multiplicities->multiset (fu/fmap #(* k %) (multiplicities m)))))
 
 (defn subset?
   "Return true, if a is a subset of b."
