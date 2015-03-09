@@ -1,4 +1,4 @@
-# multiset
+# multiset [![Build Status](https://travis-ci.org/achim/multiset.svg)](https://travis-ci.org/achim/multiset)
 
 A simple multiset/bag implementation for Clojure.
 
