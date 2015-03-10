@@ -6,7 +6,7 @@ jdk:
 - oraclejdk8
 - openjdk7
 after_success:
-- lein2 deploy clojars
+- lein2 deploy clojars-https
 env:
   global:
     secure: PNQmjUOSzxPy4mEzGsSVKYiZxF/yeN4TwS84U7jZNgsnOYCnjmgW5lyEYZ6a4mnl8RH7v/RiDLqLV3Wa4pcWvdRdJSSx14SDZCu3jCkGEhgVmuyUOQvfn6qNVHqdyOvzB2Z11srENURfULK+L8bqXhqFFpbJKNDbUTo2q/goz/E=
