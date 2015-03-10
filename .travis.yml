@@ -7,3 +7,8 @@ jdk:
 - openjdk7
 after_success:
 - lein2 deploy clojars
+env:
+  global:
+    secure: PNQmjUOSzxPy4mEzGsSVKYiZxF/yeN4TwS84U7jZNgsnOYCnjmgW5lyEYZ6a4mnl8RH7v/RiDLqLV3Wa4pcWvdRdJSSx14SDZCu3jCkGEhgVmuyUOQvfn6qNVHqdyOvzB2Z11srENURfULK+L8bqXhqFFpbJKNDbUTo2q/goz/E=
+git:
+  submodules: false
