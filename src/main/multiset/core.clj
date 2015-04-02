@@ -41,8 +41,8 @@
 
   clojure.lang.Seqable ;----------
   (seq [this]
-    (let [k (first (keys t))]
-      (if k
+    (if-let [entry (first (seq t))]
+      (let [k (key entry)]
         (lazy-seq (cons k (.seq (.disjoin this k)))))))
 
   clojure.lang.Counted ;----------

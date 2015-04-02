@@ -43,6 +43,10 @@
             b (ms/multiset 4 2 2 7 1)]
         (= a b) => truthy))
 
+(fact "seq retains falsey values"
+      (let [a (ms/multiset nil nil false false)]
+        (apply ms/multiset (seq a)) => a))
+
 (fact "empty multiset is a multiset"
       (instance? MultiSet (empty (ms/multiset))))
 
