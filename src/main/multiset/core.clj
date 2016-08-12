@@ -77,11 +77,11 @@
     (zero? size))
   (size [this] size)
   (toArray [this a]
-    (.toArray ^Collection (seq this) a))
+    (.toArray ^Collection (or (seq this) ()) a))
   (toArray [this]
-    (.toArray ^Collection (seq this)))
+    (.toArray ^Collection (or (seq this) ())))
   (iterator [this]
-    (.iterator ^Collection (seq this)))
+    (.iterator ^Collection (or (seq this) ())))
   (containsAll [this coll]
     (.containsAll ^Collection (into #{} this) coll))
 

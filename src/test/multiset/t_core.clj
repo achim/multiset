@@ -101,3 +101,11 @@
 (fact "empty retains meta"
       (let [m {:foo :bar}]
         (meta (empty (with-meta (ms/multiset) m))) => m))
+
+(fact "vec works"
+      (vec (ms/multiset)) => []
+      (vec (ms/multiset 9 9)) => [9 9])
+
+(fact ".toArray works"
+      (seq (.toArray (ms/multiset))) => nil
+      (seq (.toArray (ms/multiset 42 42))) => [42 42])
