@@ -93,7 +93,9 @@
       false))
   (hashCode [this]
     (reduce-kv (fn [acc k v]
-                 (unchecked-add-int acc (unchecked-multiply-int (.hashCode k) v)))
+                 (if (nil? k)
+                   acc
+                   (unchecked-add-int acc (unchecked-multiply-int (.hashCode k) v))))
                0
                t))
 

@@ -111,9 +111,9 @@
       (seq (.toArray (ms/multiset 42 42))) => [42 42])
 
 (fact "multiset equals equivalent set"
-      (= (ms/multiset 1 2 3) #{1 2 3}) => true
-      (= #{1 2 3} (ms/multiset 1 2 3)) => true)
+      (= (ms/multiset 1 2 3 nil) #{1 2 3 nil}) => true
+      (= #{1 2 3 nil} (ms/multiset 1 2 3 nil)) => true)
 
 (fact "hash uses correct algorithm"
-      (.hashCode (ms/multiset 1 2 3)) => (.hashCode #{1 2 3})
-      (hash (ms/multiset 1 2 3)) => (hash #{1 2 3}))
+      (.hashCode (ms/multiset 1 2 3 nil)) => (.hashCode #{1 2 3 nil})
+      (hash (ms/multiset 1 2 3 nil)) => (hash #{1 2 3 nil}))
