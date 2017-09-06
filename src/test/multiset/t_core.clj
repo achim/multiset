@@ -20,7 +20,7 @@
         (contains? a 0) => falsey
         (contains? a 2) => truthy
         (contains? a 7) => truthy)
-  
+
   (fact "disj works correctly"
         (contains? (disj a 7) 7) => falsey
         (contains? (disj a 2) 2) => truthy
@@ -113,3 +113,7 @@
 (fact "multiset equals equivalent set"
       (= (ms/multiset 1 2 3) #{1 2 3}) => true
       (= #{1 2 3} (ms/multiset 1 2 3)) => true)
+
+(fact "hash uses correct algorithm"
+      (.hashCode (ms/multiset 1 2 3)) => (.hashCode #{1 2 3})
+      (hash (ms/multiset 1 2 3)) => (hash #{1 2 3}))

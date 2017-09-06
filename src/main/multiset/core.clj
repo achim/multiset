@@ -69,6 +69,14 @@
   (withMeta [this m]
     (MultiSet. m t size))
 
+  clojure.lang.IHashEq ;----------
+  (hasheq [this]
+    (-> (reduce-kv (fn [acc k v]
+                     (unchecked-add-int acc (unchecked-multiply-int (hash k) v)))
+                   0
+                   t)
+        (mix-collection-hash size)))
+
   Object ;----------
   (equals [this x]
     (cond
@@ -84,7 +92,10 @@
       :else
       false))
   (hashCode [this]
-    (hash-combine (hash t) MultiSet))
+    (reduce-kv (fn [acc k v]
+                 (unchecked-add-int acc (unchecked-multiply-int (.hashCode k) v)))
+               0
+               t))
 
   clojure.lang.IFn ;----------
   (invoke [this x]
