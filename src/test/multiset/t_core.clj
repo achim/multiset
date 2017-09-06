@@ -109,3 +109,7 @@
 (fact ".toArray works"
       (seq (.toArray (ms/multiset))) => nil
       (seq (.toArray (ms/multiset 42 42))) => [42 42])
+
+(fact "multiset equals equivalent set"
+      (= (ms/multiset 1 2 3) #{1 2 3}) => true
+      (= #{1 2 3} (ms/multiset 1 2 3)) => true)

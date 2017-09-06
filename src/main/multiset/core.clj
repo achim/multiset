@@ -30,6 +30,20 @@
             (assoc t x (dec oldcount)))
           (dec size)))))
 
+  java.util.Set ;----------
+  (add [this _]
+    (throw (UnsupportedOperationException.)))
+  (addAll [this _]
+    (throw (UnsupportedOperationException.)))
+  (clear [this]
+    (throw (UnsupportedOperationException.)))
+  (remove [this _]
+    (throw (UnsupportedOperationException.)))
+  (removeAll [this _]
+    (throw (UnsupportedOperationException.)))
+  (retainAll [this _]
+    (throw (UnsupportedOperationException.)))
+
   clojure.lang.IPersistentCollection ;----------
   (cons [this x]
     (MultiSet.
@@ -57,8 +71,17 @@
 
   Object ;----------
   (equals [this x]
-    (if (instance? MultiSet x)
+    (cond
+      (instance? MultiSet x)
       (.equals t (.t ^MultiSet x))
+
+      (instance? java.util.Set x)
+      (let [x ^java.util.Set x]
+        (and (= size (.size x))
+             (= size (count t))
+             (every? #(.contains x %) (keys t))))
+
+      :else
       false))
   (hashCode [this]
     (hash-combine (hash t) MultiSet))
