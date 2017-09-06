@@ -72,8 +72,9 @@
   clojure.lang.IHashEq ;----------
   (hasheq [this]
     (-> (reduce-kv (fn [acc k v]
-                     (unchecked-add-int acc (unchecked-multiply-int (hash k) v)))
-                   0
+                     (unchecked-add-int ^int acc (unchecked-multiply-int (hash k)
+                                                                         (int v))))
+                   (int 0)
                    t)
         (mix-collection-hash size)))
 
@@ -95,8 +96,9 @@
     (reduce-kv (fn [acc k v]
                  (if (nil? k)
                    acc
-                   (unchecked-add-int acc (unchecked-multiply-int (.hashCode k) v))))
-               0
+                   (unchecked-add-int ^int acc (unchecked-multiply-int (.hashCode ^Object k)
+                                                                       (int v)))))
+               (int 0)
                t))
 
   clojure.lang.IFn ;----------
@@ -113,11 +115,14 @@
     (zero? size))
   (size [this] size)
   (toArray [this a]
-    (.toArray ^Collection (or (seq this) ()) a))
+    (let [s (or (seq this) ())]
+      (.toArray ^Collection s a)))
   (toArray [this]
-    (.toArray ^Collection (or (seq this) ())))
+    (let [s (or (seq this) ())]
+      (.toArray ^Collection s)))
   (iterator [this]
-    (.iterator ^Collection (or (seq this) ())))
+    (let [s (or (seq this) ())]
+      (.iterator ^Collection s)))
   (containsAll [this coll]
     (.containsAll ^Collection (into #{} this) coll))
 
