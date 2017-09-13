@@ -4,6 +4,10 @@
   (:import [multiset.core MultiSet]))
 
 
+(fact "different ways of constructing are equivalent"
+      (= (ms/multiset 1 1 2 3 5 8) (ms/into-multiset [8 5 3 2 1 1])) => truthy
+      (= (ms/multiset 1 1 2 3 5 8) (conj (ms/into-multiset #{1 2 3 5 8}) 1)) => truthy)
+
 (fact "get/invoke works like partial identity"
       (let [x1 (Object.)
             x2 (Object.)
@@ -20,7 +24,7 @@
         (contains? a 0) => falsey
         (contains? a 2) => truthy
         (contains? a 7) => truthy)
-  
+
   (fact "disj works correctly"
         (contains? (disj a 7) 7) => falsey
         (contains? (disj a 2) 2) => truthy

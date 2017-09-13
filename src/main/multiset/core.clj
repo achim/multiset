@@ -90,9 +90,13 @@
 
 (def ^:private empty-multiset (MultiSet. nil {} 0))
 
+(defn into-multiset
+  "Create a multiset from the given collection."
+  [c] (into empty-multiset c))
+
 (defn multiset
   "Create a multiset with given elements."
-  [& xs] (into empty-multiset xs))
+  [& xs] (into-multiset xs))
 
 (defn multiplicities->multiset
   "Create a multiset from a given multilicities map
