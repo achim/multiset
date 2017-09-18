@@ -80,17 +80,36 @@
 
   Object ;----------
   (equals [this x]
-    (cond
-      (instance? MultiSet x)
+    (condp instance? x
+      MultiSet
       (.equals t (.t ^MultiSet x))
 
-      (instance? java.util.Set x)
+      ;; Clojure set requires each element to be unique, so we can use a more efficient test
+      clojure.lang.IPersistentSet
+      (and (= size (.size x))
+           (= size (count t))
+           (every? #(contains? x %) (keys t)))
+
+      ;; Java AbstractSet implementation also requires each element to be unique
+      java.util.AbstractSet
       (let [x ^java.util.Set x]
         (and (= size (.size x))
              (= size (count t))
              (every? #(.contains x %) (keys t))))
 
-      :else
+      ;; Treat Set interface differently in case x is another implementation of a multi-set
+      java.util.Set
+      (let [x ^java.util.Set x]
+        (and (= size (.size x))
+             (boolean
+              (reduce (fn [ms e]
+                        (if (contains? ms e)
+                          (disj ms e)
+                          (reduced false)))
+                      this
+                      x))))
+
+      ;; Else
       false))
   (hashCode [this]
     (reduce-kv (fn [acc k v]
