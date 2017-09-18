@@ -30,6 +30,20 @@
             (assoc t x (dec oldcount)))
           (dec size)))))
 
+  java.util.Set ;----------
+  (add [this _]
+    (throw (UnsupportedOperationException.)))
+  (addAll [this _]
+    (throw (UnsupportedOperationException.)))
+  (clear [this]
+    (throw (UnsupportedOperationException.)))
+  (remove [this _]
+    (throw (UnsupportedOperationException.)))
+  (removeAll [this _]
+    (throw (UnsupportedOperationException.)))
+  (retainAll [this _]
+    (throw (UnsupportedOperationException.)))
+
   clojure.lang.IPersistentCollection ;----------
   (cons [this x]
     (MultiSet.
@@ -55,13 +69,56 @@
   (withMeta [this m]
     (MultiSet. m t size))
 
+  clojure.lang.IHashEq ;----------
+  (hasheq [this]
+    (-> (reduce-kv (fn [acc k v]
+                     (unchecked-add-int ^int acc (unchecked-multiply-int (hash k)
+                                                                         (int v))))
+                   (int 0)
+                   t)
+        (mix-collection-hash size)))
+
   Object ;----------
   (equals [this x]
-    (if (instance? MultiSet x)
+    (condp instance? x
+      MultiSet
       (.equals t (.t ^MultiSet x))
+
+      ;; Clojure set requires each element to be unique, so we can use a more efficient test
+      clojure.lang.IPersistentSet
+      (and (= size (.size x))
+           (= size (count t))
+           (every? #(contains? x %) (keys t)))
+
+      ;; Java AbstractSet implementation also requires each element to be unique
+      java.util.AbstractSet
+      (let [x ^java.util.Set x]
+        (and (= size (.size x))
+             (= size (count t))
+             (every? #(.contains x %) (keys t))))
+
+      ;; Treat Set interface differently in case x is another implementation of a multi-set
+      java.util.Set
+      (let [x ^java.util.Set x]
+        (and (= size (.size x))
+             (boolean
+              (reduce (fn [ms e]
+                        (if (contains? ms e)
+                          (disj ms e)
+                          (reduced false)))
+                      this
+                      x))))
+
+      ;; Else
       false))
   (hashCode [this]
-    (hash-combine (hash t) MultiSet))
+    (reduce-kv (fn [acc k v]
+                 (if (nil? k)
+                   acc
+                   (unchecked-add-int ^int acc (unchecked-multiply-int (.hashCode ^Object k)
+                                                                       (int v)))))
+               (int 0)
+               t))
 
   clojure.lang.IFn ;----------
   (invoke [this x]
@@ -77,11 +134,14 @@
     (zero? size))
   (size [this] size)
   (toArray [this a]
-    (.toArray ^Collection (or (seq this) ()) a))
+    (let [s (or (seq this) ())]
+      (.toArray ^Collection s a)))
   (toArray [this]
-    (.toArray ^Collection (or (seq this) ())))
+    (let [s (or (seq this) ())]
+      (.toArray ^Collection s)))
   (iterator [this]
-    (.iterator ^Collection (or (seq this) ())))
+    (let [s (or (seq this) ())]
+      (.iterator ^Collection s)))
   (containsAll [this coll]
     (.containsAll ^Collection (into #{} this) coll))
 

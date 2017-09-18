@@ -1,8 +1,21 @@
 (ns multiset.t_core
   (:require [multiset.core :as ms]
             [midje.sweet :refer :all])
-  (:import [multiset.core MultiSet]))
+  (:import [java.util ArrayList HashSet]
+           [multiset.core MultiSet]))
 
+(deftype TestMultiSet [^ArrayList t]
+  java.util.Set
+  (size [this]
+    (.size t))
+  (contains [this x]
+    (.contains t x))
+  (iterator [this]
+    (.iterator t)))
+
+(defn test-multiset
+  [c]
+  (TestMultiSet. (ArrayList. c)))
 
 (fact "get/invoke works like partial identity"
       (let [x1 (Object.)
@@ -20,7 +33,7 @@
         (contains? a 0) => falsey
         (contains? a 2) => truthy
         (contains? a 7) => truthy)
-  
+
   (fact "disj works correctly"
         (contains? (disj a 7) 7) => falsey
         (contains? (disj a 2) 2) => truthy
@@ -109,3 +122,19 @@
 (fact ".toArray works"
       (seq (.toArray (ms/multiset))) => nil
       (seq (.toArray (ms/multiset 42 42))) => [42 42])
+
+(fact "multiset equals equivalent clojure set"
+      (= (ms/multiset 1 2 3 nil) #{1 2 3 nil}) => true
+      (= #{1 2 3 nil} (ms/multiset 1 2 3 nil)) => true)
+
+(fact "multiset equals equivalent Java Set"
+      (= (ms/multiset 1 2 3 nil) (HashSet. [1 2 3 nil])) => true
+      (= (HashSet. [1 2 3 nil]) (ms/multiset 1 2 3 nil)) => true)
+
+(fact "multiset equals another multiset implementation"
+      (= (ms/multiset 1 2 3 2 3 nil) (test-multiset [1 2 3 2 3 nil])) => true
+      (= (test-multiset [1 2 3 2 3 nil]) (ms/multiset 1 2 3 2 3 nil)) => true)
+
+(fact "hash uses correct algorithm"
+      (.hashCode (ms/multiset 1 2 3 nil)) => (.hashCode #{1 2 3 nil})
+      (hash (ms/multiset 1 2 3 nil)) => (hash #{1 2 3 nil}))
