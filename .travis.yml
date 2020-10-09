@@ -1,12 +1,12 @@
 language: clojure
-lein: lein2
-script: lein2 midje
+lein: lein
+script: lein midje
 jdk:
 - oraclejdk7
 - oraclejdk8
 - openjdk7
 after_success:
-- lein2 deploy clojars-https
+- lein deploy clojars-https
 env:
   global:
     secure: PNQmjUOSzxPy4mEzGsSVKYiZxF/yeN4TwS84U7jZNgsnOYCnjmgW5lyEYZ6a4mnl8RH7v/RiDLqLV3Wa4pcWvdRdJSSx14SDZCu3jCkGEhgVmuyUOQvfn6qNVHqdyOvzB2Z11srENURfULK+L8bqXhqFFpbJKNDbUTo2q/goz/E=
