@@ -76,9 +76,9 @@
   (isEmpty [this]
     (zero? size))
   (size [this] size)
-  (toArray [this a]
-    (.toArray ^Collection (or (seq this) ()) a))
-  (toArray [this]
+  (^objects toArray [this ^objects a]
+    (.toArray ^Collection (or (seq this) ()) ^objects a))
+  (^objects toArray [^objects this]
     (.toArray ^Collection (or (seq this) ())))
   (iterator [this]
     (.iterator ^Collection (or (seq this) ())))
